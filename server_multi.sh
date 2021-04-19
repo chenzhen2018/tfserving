@@ -1,0 +1,1 @@
+sudo docker run -p 8500:8500 --mount type=bind,source=/data1/chenz/workspace/tfserving/saved_model_multi,target=/models/saved_model_multi --name=tfserving_test_multi -t tensorflow/serving:2.3.0 --model_config=/models/saved_model/models.config &

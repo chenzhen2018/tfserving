@@ -1,0 +1,1 @@
+sudo docker run -p 8500:8500 --mount type=bind,source=/data1/chenz/workspace/tfserving/saved_model/clothing,target=/models/clothing -e MODEL_NAME=clothing --name=tfserving_test -t tensorflow/serving:2.3.0 &

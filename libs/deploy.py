@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-  
 # =================================================
 
+import json
+import requests
 import tensorflow as tf
 from tensorflow_serving.apis import predict_pb2
 from tensorflow_serving.apis import prediction_service_pb2_grpc
@@ -35,13 +37,24 @@ class PredictModelGrpc(object):
         return res
 
 
-if __name__ == '__main__':
-    model = PredictModelGrpc(model_name='03_win_day')
-    import time
-    for i in range(10):
-        s = time.time()
-        data = np.random.uniform(0, 1, (1, 12, 3, 3, 11))
-        result = model.inference(data)
-        print(result.shape)
-        e = time.time()
-        print(e-s)
+class PredictModelRESTAPI(object):
+    def __init__(self, model_name, input_name, output_name, socket='localhost:8500'):
+        self.socket = socket
+        self.model_name = model_name
+        self.input_name = input_name
+        self.output_name = output_name
+        self.url = self._get_url()
+
+    def _get_url(self):
+        url = "http://{}/v1/models/{}:predict".format(self.socket, self.model_name)
+        return url
+
+    def inference(self, data):
+        payload = {
+            "instances": [{self.input_name: data.tolist()}]
+        }
+        r = requests.post(self.url, json=payload)
+        pred = json.loads(r.content.decode('utf-8'))
+        pred = np.array(pred['predictions'][0])
+
+        return pred

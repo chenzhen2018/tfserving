@@ -3,7 +3,7 @@
 
 import numpy as np
 from PIL import Image
-from deploy import PredictModelGrpc
+from libs.deploy import PredictModelGrpc, PredictModelRESTAPI
 
 """
 4. Client
@@ -17,9 +17,13 @@ img = Image.open(image_path)
 img = np.array(img) / 255.0
 
 # =======================
-# ===== Load image ======
+# ====== Predict ========
 # =======================
-model = PredictModelGrpc(model_name='clothing', input_name='flatten_input', output_name='dense_1')
+model = PredictModelRESTAPI(model_name='clothing', input_name='flatten_input', output_name='dense_1', socket='localhost:8501')
+res = model.inference(img)
+print(res)
+
+model = PredictModelGrpc(model_name='clothing', input_name='flatten_input', output_name='dense_1', socket='0.0.0.0:8500')
 res = model.inference(img)
 print(res)
 

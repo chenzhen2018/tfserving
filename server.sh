@@ -1,1 +1,10 @@
-sudo docker run -p 8500:8500 --mount type=bind,source=/data1/chenz/workspace/tfserving/saved_model/clothing,target=/models/clothing -e MODEL_NAME=clothing --name=tfserving_test -t tensorflow/serving:2.3.0 &
+#!/usr/bin/env bash
+source ./config.properties
+
+# shellcheck disable=SC2154
+sudo docker run \
+-p 8500:8500 \
+--mount type=bind,source=${source},target=${target} \
+-e MODEL_NAME=${model_name} \
+--name=${container_name} \
+-t ${images_name}
